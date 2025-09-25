@@ -1,0 +1,92 @@
+-- exercicios
+
+USE ecommerce;
+
+-- Selecionar todos os clientes
+SELECT * FROM cliente;
+
+-- Selecionar todos os produtos
+SELECT * FROM produto;
+
+-- Selecionar todos os pedidos
+SELECT * FROM pedido;
+
+SELECT * FROM pedido LIMIT 8;
+
+-- Encontrar clientes do Rio de Janeiro
+SELECT * FROM cliente
+WHERE Cidade = 'Rio de Janeiro';
+
+-- Listar produtos com avaliação acima de 4.5
+SELECT NomeProduto, Categoria, Avaliação FROM produto
+WHERE Avaliação > 4.5;
+
+-- Encontrar pedidos em processamento
+SELECT idPedido, idPedidoCliente, StatusPedido FROM pedido
+WHERE StatusPedido = 'Em Processamento';
+
+-- Calcular o valor total do pedido (Frete + 100 por item como exemplo)
+SELECT idPedido, DescriçãoPedido, Frete, Frete + 100 AS Preco_Total FROM pedido;
+
+-- Criar o nome completo do cliente a partir de Fname e Lname
+SELECT CONCAT(Fname, ' ', Minit, '. ', Lname) AS Nome_Completo, Email, Cidade FROM cliente;
+
+-- Listar produtos em ordem crescente de avaliação
+SELECT NomeProduto, Categoria, Avaliação FROM produto
+ORDER BY Avaliação ASC;
+
+-- Listar produtos em ordem decrescente de avaliação
+SELECT NomeProduto, Categoria, Avaliação FROM produto
+ORDER BY Avaliação DESC;
+
+-- Listar clientes por data de nascimento, do mais novo para o mais velho
+SELECT Fname, Lname, DataNascimento FROM cliente
+ORDER BY DataNascimento DESC;
+
+-- Listar produtos por categoria e, dentro de cada categoria, por avaliação
+SELECT NomeProduto, Categoria, Avaliação FROM produto
+ORDER BY Categoria ASC, Avaliação DESC;
+
+-- Contar quantos produtos cada categoria possui, mas somente para categorias com mais de 2 produtos
+SELECT Categoria, COUNT(*) AS TotalProdutos
+FROM produto
+GROUP BY Categoria
+HAVING TotalProdutos > 2;
+
+-- Encontrar fornecedores com mais de 100 unidades totais de produto
+SELECT idFornecedor, SUM(Quantidade) AS TotalProdutosFornecidos
+FROM Produto_Fornecedor
+GROUP BY idFornecedor
+HAVING TotalProdutosFornecidos >= 200;
+
+-- Recuperar nome do completo cliente, status do pedido e frete
+-- Usando a chave estrangeira idPedidoCliente para unir as tabelas
+SELECT CONCAT(c.Fname, ' ', c.Minit, '. ', c.Lname) AS Nome_Completo, p.StatusPedido, p.Frete
+FROM cliente c
+JOIN pedido p ON c.idCliente = p.idPedidoCliente;
+
+-- Listar produtos e os nomes dos vendedores que os oferecem
+-- Usando a tabela de junção 'ProdutoPorVendedorTerceiro'
+SELECT v.NomeFantasia AS NomeVendedor, pr.NomeProduto
+FROM vendedor v
+JOIN ProdutoPorVendedorTerceiro pvt ON v.idVendedor = pvt.idVendedorTerceiro
+JOIN produto pr ON pvt.idProduto = pr.idProduto;
+
+-- Mostrar o nome completo do cliente, o nome do produto e a quantidade comprada
+SELECT CONCAT(c.Fname, ' ', c.Minit, '. ', c.Lname) AS Nome_Completo , pr.NomeProduto, pp.Quantidade
+FROM cliente c
+JOIN pedido pe ON c.idCliente = pe.idPedidoCliente
+JOIN produto_Pedido pp ON pe.idPedido = pp.idPedido
+JOIN produto pr ON pp.idProduto = pr.idProduto;
+
+-- Algum vendedor também é fornecedor?
+-- resposta, não!
+
+SELECT
+    v.RazãoSocial AS NomeVendedor,
+    f.RazãoSocial AS NomeFornecedor,
+    v.CNPJ
+FROM
+    vendedor v
+JOIN
+    fornecedor f ON v.CNPJ = f.CNPJ;
