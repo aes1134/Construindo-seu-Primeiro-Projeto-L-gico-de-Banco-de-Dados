@@ -33,5 +33,6 @@ Quantos pedidos foram feitos por cada cliente?
 Algum vendedor também é fornecedor?
 
 As repostas estão no arquivo Exercícios.txt
+O Diagrama está no arquivo E-commerce refinado. png
 Relação de produtos fornecedores e estoques;
 Relação de nomes dos fornecedores e nomes dos produtos;
